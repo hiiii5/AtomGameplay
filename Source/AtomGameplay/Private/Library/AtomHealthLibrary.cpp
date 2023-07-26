@@ -1,13 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "../../Public/Library/HealthLibrary.h"
-
+﻿#include "../../Public/Library/AtomHealthLibrary.h"
 #include "Components/AtomDamageOverTimeComponent.h"
 #include "Components/AtomHealOverTimeComponent.h"
 #include "Components/AtomHealthComponent.h"
 
-void UHealthLibrary::Heal(AActor* Actor, const float Amount)
+
+void UAtomHealthLibrary::Heal(AActor* Actor, const float Amount)
 {
 	// To prevent a crash, check if the actor is valid.
 	if (!Actor)
@@ -25,7 +22,7 @@ void UHealthLibrary::Heal(AActor* Actor, const float Amount)
 	HealthComponent->Heal(Amount);
 }
 
-bool UHealthLibrary::HealOverTime(AActor* Actor, const float HealPerTick, const float Duration, const float TickRate, const float InitialDelay)
+bool UAtomHealthLibrary::HealOverTime(AActor* Actor, const float HealPerTick, const float Duration, const float TickRate, const float InitialDelay)
 {
 	// To prevent a crash, check if the actor is valid.
 	if (!Actor)
@@ -43,7 +40,7 @@ bool UHealthLibrary::HealOverTime(AActor* Actor, const float HealPerTick, const 
 	return Comp->BeginHealOverTime();
 }
 
-bool UHealthLibrary::DamageOverTime(AActor* Actor, float DamagePerTick, float Duration, float TickRate, float InitialDelay)
+bool UAtomHealthLibrary::DamageOverTime(AActor* Actor, float DamagePerTick, float Duration, float TickRate, float InitialDelay)
 {
 	// To prevent a crash, check if the actor is valid.
 	if (!Actor)
@@ -61,7 +58,7 @@ bool UHealthLibrary::DamageOverTime(AActor* Actor, float DamagePerTick, float Du
 	return Comp->BeginDamageOverTime();
 }
 
-bool UHealthLibrary::IsAlive(AActor* Actor)
+bool UAtomHealthLibrary::IsAlive(AActor* Actor)
 {
 	// To prevent a crash, check if the actor is valid.
 	if (!Actor)
@@ -79,7 +76,7 @@ bool UHealthLibrary::IsAlive(AActor* Actor)
 	return HealthComponent->IsAlive();
 }
 
-float UHealthLibrary::GetHealth(AActor* Actor)
+float UAtomHealthLibrary::GetHealth(AActor* Actor)
 {
 	// To prevent a crash, check if the actor is valid.
 	if (!Actor)

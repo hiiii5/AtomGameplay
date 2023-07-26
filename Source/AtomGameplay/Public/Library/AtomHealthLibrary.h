@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "HealthLibrary.generated.h"
+#include "AtomHealthLibrary.generated.h"
 
 /**
  * 
  */
 UCLASS(Blueprintable)
-class ATOMGAMEPLAY_API UHealthLibrary : public UBlueprintFunctionLibrary
+class ATOMGAMEPLAY_API UAtomHealthLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
