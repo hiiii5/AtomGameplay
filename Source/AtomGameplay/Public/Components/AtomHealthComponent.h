@@ -13,7 +13,9 @@ DECLARE_LOG_CATEGORY_EXTERN(LogAtomHealthComponent, Log, All);
 
 /** Delegates used by the health component. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamageTaken, float, Damage, UDamageType*, DamageType, float, RemainingHealth);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHeal, float, Amount, float, Health);
 
 
@@ -39,7 +41,7 @@ struct ATOMGAMEPLAY_API FDefenseData : public FTableRowBase
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
-	float Armor;
+	float Armor = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
 	TMap<FString, float> Resistances;
@@ -53,7 +55,7 @@ struct ATOMGAMEPLAY_API FDamageData : public FTableRowBase
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
-	float ArmorDamage;
+	float ArmorDamage = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
 	TMap<FString, float> ResistancesDamage;
@@ -75,7 +77,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
 	float MaxHealth;
-	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
 	FDataTableRowHandle DefenseData;
 
@@ -91,16 +93,16 @@ public:
 	/** Overload this to provide a custom damage calculation. The base version just sums up the results of each resistance damage, armor damage, and the base damage. */
 	UFUNCTION(BlueprintNativeEvent, Category="Health")
 	float CalculateDamage(float Damage, const UAtomBaseDamage* DamageType);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Health")
 	void TakeDamage(float Damage, UAtomBaseDamage* DamageType);
 
 	UFUNCTION(BlueprintCallable, Category="Health")
 	void Heal(float Amount);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Health")
 	bool IsAlive() const;
-	
-	UFUNCTION(BlueprintCallable, Category="Health")	
+
+	UFUNCTION(BlueprintCallable, Category="Health")
 	float GetHealth() const;
 };
