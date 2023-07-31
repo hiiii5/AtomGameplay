@@ -3,8 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Engine/DataAsset.h"
-#include "Engine/DataTable.h"
+#include "Stats/AtomStats.h"
 #include "AtomHealthComponent.generated.h"
 
 
@@ -13,9 +12,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogAtomHealthComponent, Log, All);
 
 /** Delegates used by the health component. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamageTaken, float, Damage, UDamageType*, DamageType, float, RemainingHealth);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHeal, float, Amount, float, Health);
 
 
@@ -27,40 +24,8 @@ class ATOMGAMEPLAY_API UAtomBaseDamage : public UDamageType
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
-	float ArmorDamage;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
-	TMap<FString, float> ResistancesDamage;
+	FDamageStats ResistancesDamage;
 };
-
-
-USTRUCT(BlueprintType)
-struct ATOMGAMEPLAY_API FDefenseData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
-	float Armor = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
-	TMap<FString, float> Resistances;
-};
-
-
-USTRUCT(BlueprintType)
-struct ATOMGAMEPLAY_API FDamageData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
-	float ArmorDamage = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
-	TMap<FString, float> ResistancesDamage;
-};
-
 
 /** Health component for actors. */
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -72,14 +37,14 @@ public:
 	// Sets default values for this component's properties
 	UAtomHealthComponent();
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Health")
+	bool bStartWithMaxHealth;
+	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Health")
 	float Health;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
 	float MaxHealth;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
-	FDataTableRowHandle DefenseData;
 
 	UPROPERTY(BlueprintAssignable, Category = "Health")
 	FOnDeath OnDeath;
@@ -89,10 +54,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Health")
 	FOnHeal OnHeal;
-
-	/** Overload this to provide a custom damage calculation. The base version just sums up the results of each resistance damage, armor damage, and the base damage. */
-	UFUNCTION(BlueprintNativeEvent, Category="Health")
-	float CalculateDamage(float Damage, const UAtomBaseDamage* DamageType);
 
 	UFUNCTION(BlueprintCallable, Category="Health")
 	void TakeDamage(float Damage, UAtomBaseDamage* DamageType);
@@ -105,4 +66,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Health")
 	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category="Health")
+	void SetHealth(const float NewHealth);
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

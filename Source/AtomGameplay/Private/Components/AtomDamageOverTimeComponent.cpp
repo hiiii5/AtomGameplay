@@ -1,5 +1,5 @@
-﻿#include "../../Public/Components/AtomDamageOverTimeComponent.h"
-#include "../../Public/Components/AtomHealthComponent.h"
+﻿#include "Components/AtomDamageOverTimeComponent.h"
+#include "Components/AtomHealthComponent.h"
 
 
 DEFINE_LOG_CATEGORY(LogAtomDamageOverTimeComponent);

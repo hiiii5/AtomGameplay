@@ -1,8 +1,26 @@
-﻿#include "../../Public/Library/AtomHealthLibrary.h"
+﻿#include "Library/AtomHealthLibrary.h"
 #include "Components/AtomDamageOverTimeComponent.h"
 #include "Components/AtomHealOverTimeComponent.h"
 #include "Components/AtomHealthComponent.h"
 
+
+void UAtomHealthLibrary::TakeDamage(AActor* Actor, const float Damage, const FDamageStats DamageStats)
+{
+	// To prevent a crash, check if the actor is valid.
+	if (!Actor)
+	{
+		return;
+	}
+
+	UAtomHealthComponent* HealthComponent = Actor->FindComponentByClass<UAtomHealthComponent>();
+	if(!HealthComponent)
+	{
+		return;
+	}
+	
+	UAtomBaseDamage* DamageType = CreateDamageType(DamageStats);
+	HealthComponent->TakeDamage(Damage, DamageType);
+}
 
 void UAtomHealthLibrary::Heal(AActor* Actor, const float Amount)
 {
@@ -92,4 +110,11 @@ float UAtomHealthLibrary::GetHealth(AActor* Actor)
 	}
 
 	return HealthComponent->GetHealth();
+}
+
+UAtomBaseDamage* UAtomHealthLibrary::CreateDamageType(const FDamageStats DamageStats)
+{
+	UAtomBaseDamage* DamageType = NewObject<UAtomBaseDamage>();
+	DamageType->ResistancesDamage = DamageStats;
+	return DamageType;
 }
