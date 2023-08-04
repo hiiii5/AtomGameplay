@@ -23,7 +23,7 @@ class ATOMGAMEPLAY_API UAtomBaseDamage : public UDamageType
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	FDamageStats ResistancesDamage;
 };
 
@@ -37,37 +37,40 @@ public:
 	// Sets default values for this component's properties
 	UAtomHealthComponent();
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Health")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Atom|Health")
 	bool bStartWithMaxHealth;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Health")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Atom|Health")
 	float Health;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Health")
 	float MaxHealth;
 
-	UPROPERTY(BlueprintAssignable, Category = "Health")
+	UPROPERTY(BlueprintAssignable, Category = "Atom|Health")
 	FOnDeath OnDeath;
 
-	UPROPERTY(BlueprintAssignable, Category = "Health")
+	UPROPERTY(BlueprintAssignable, Category = "Atom|Health")
 	FOnDamageTaken OnDamageTaken;
 
-	UPROPERTY(BlueprintAssignable, Category = "Health")
+	UPROPERTY(BlueprintAssignable, Category = "Atom|Health")
 	FOnHeal OnHeal;
 
-	UFUNCTION(BlueprintCallable, Category="Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	void TakeDamage(float Damage, UAtomBaseDamage* DamageType);
 
-	UFUNCTION(BlueprintCallable, Category="Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	void Heal(float Amount);
 
-	UFUNCTION(BlueprintCallable, Category="Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	bool IsAlive() const;
 
-	UFUNCTION(BlueprintCallable, Category="Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	float GetHealth() const;
 
-	UFUNCTION(BlueprintCallable, Category="Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
+	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	void SetHealth(const float NewHealth);
 
 protected:

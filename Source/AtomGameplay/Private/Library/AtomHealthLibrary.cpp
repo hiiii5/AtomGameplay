@@ -112,6 +112,22 @@ float UAtomHealthLibrary::GetHealth(AActor* Actor)
 	return HealthComponent->GetHealth();
 }
 
+float UAtomHealthLibrary::GetMaxHealth(AActor *Actor)
+{
+    if (!IsValid(Actor))
+	{
+		return 0.0f;
+	}
+
+	const UAtomHealthComponent* HealthComponent = Actor->FindComponentByClass<UAtomHealthComponent>();
+	if (!IsValid(HealthComponent))
+	{
+		return 0.0f;
+	}
+	
+	return HealthComponent->GetMaxHealth();
+}
+
 UAtomBaseDamage* UAtomHealthLibrary::CreateDamageType(const FDamageStats DamageStats)
 {
 	UAtomBaseDamage* DamageType = NewObject<UAtomBaseDamage>();

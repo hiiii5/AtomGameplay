@@ -20,16 +20,16 @@ public:
 	// Sets default values for this component's properties
 	UAtomHealOverTimeComponent();
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Heal")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Heal")
 	float HealPerTick;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Heal")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Heal")
 	float Duration;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Heal")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Heal")
 	float TickRate = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Heal")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Heal")
 	float InitialDelay = 0.0f;
 
 protected:
@@ -44,6 +44,6 @@ protected:
 	void ApplyHeal();
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = "Heal")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Heal")
 	bool BeginHealOverTime();
 };
