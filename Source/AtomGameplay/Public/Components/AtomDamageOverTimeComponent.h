@@ -21,19 +21,19 @@ public:
 	// Sets default values for this component's properties
 	UAtomDamageOverTimeComponent();
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	float DamagePerTick;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	float Duration;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	float TickRate = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	float InitialDelay = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	UAtomBaseDamage* DamageType;
 	
 protected:
@@ -48,6 +48,6 @@ protected:
 	void ApplyDamage();
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = "Damage")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Damage")
 	bool BeginDamageOverTime();
 };

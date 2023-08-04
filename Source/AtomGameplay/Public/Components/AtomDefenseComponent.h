@@ -20,25 +20,25 @@ public:
 	// Sets default values for this component's properties
 	UAtomDefenseComponent();
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Defense")
 	FDefenseStats DefenseStats;
 
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	FDamageStats CalculateDamages(FDamageStats DamageStats);
 
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	float AccumulateDamages(FDamageStats DamageStats);
 
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	bool SetDefenseStats(const FDataTableRowHandle DefenseData);
 	
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	void SetDamageResistance(const FString DamageType, const float Resistance);
 
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	void RemoveDamageResistance(const FString DamageType);
 
-	UFUNCTION(BlueprintCallable, Category = "Defense")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Defense")
 	void ClearDamageResistances();
 
 protected:

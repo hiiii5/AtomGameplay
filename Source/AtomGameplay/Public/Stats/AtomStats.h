@@ -13,7 +13,7 @@ struct ATOMGAMEPLAY_API FDefenseStats
 
 public:
 	/** Mutable, percentage based, stats for resistances. Example: Armor 25%, blunt 5%, poison 100%. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Defense")
 	TMap<FString, float> Resistances;
 };
 
@@ -24,7 +24,7 @@ struct ATOMGAMEPLAY_API FDamageStats
 
 public:
 	/** Mutable, number based, stats for damages. Example: Armor 150.0f, blunt 25.2f, poison 10.55f. */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	TMap<FString, float> Damages;
 };
 
@@ -35,7 +35,7 @@ struct ATOMGAMEPLAY_API FDefenseData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Defense")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Defense")
 	FDefenseStats Stats;
 };
 
@@ -46,6 +46,6 @@ struct ATOMGAMEPLAY_API FDamageData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Damage")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Damage")
 	FDamageStats Stats;
 };

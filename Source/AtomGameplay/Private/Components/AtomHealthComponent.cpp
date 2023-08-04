@@ -56,10 +56,16 @@ float UAtomHealthComponent::GetHealth() const
 	return Health;
 }
 
+float UAtomHealthComponent::GetMaxHealth() const
+{
+    return MaxHealth;
+}
+
 void UAtomHealthComponent::SetHealth(const float NewHealth)
 {
 	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
 }
+
 
 void UAtomHealthComponent::BeginPlay()
 {

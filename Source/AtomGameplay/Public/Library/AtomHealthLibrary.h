@@ -29,7 +29,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	static bool HealOverTime(AActor* Actor, float HealPerTick, float Duration, float TickRate, float InitialDelay);
 
-	UFUNCTION(BlueprintCallable, Category="Atom|Health")
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	static bool DamageOverTime(AActor* Actor, float DamagePerTick, float Duration, float TickRate, float InitialDelay);
 	
 	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
@@ -37,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	static float GetHealth(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
+	static float GetMaxHealth(AActor* Actor);
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	static UAtomBaseDamage* CreateDamageType(FDamageStats DamageStats);
