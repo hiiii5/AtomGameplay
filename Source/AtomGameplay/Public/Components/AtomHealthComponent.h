@@ -11,7 +11,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogAtomHealthComponent, Log, All);
 
 
 /** Delegates used by the health component. */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, KilledActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamageTaken, float, Damage, UDamageType*, DamageType, float, RemainingHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHeal, float, Amount, float, Health);
 
@@ -72,6 +72,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|Health")
 	void SetHealth(const float NewHealth);
+
+	UFUNCTION(Blueprintable, Category = "Atom|Health")
+	void SetMaxHealth(const float NewMaxHealth);
 
 protected:
 	virtual void BeginPlay() override;
