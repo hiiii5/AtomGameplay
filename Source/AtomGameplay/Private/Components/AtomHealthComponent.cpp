@@ -64,6 +64,10 @@ float UAtomHealthComponent::GetMaxHealth() const
 void UAtomHealthComponent::SetHealth(const float NewHealth)
 {
 	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+	if (Health <= 0.0f)
+	{
+		OnDeath.Broadcast(this->GetOwner());
+	}
 }
 
 void UAtomHealthComponent::SetMaxHealth(const float NewMaxHealth)
