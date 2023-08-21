@@ -1,6 +1,19 @@
 ﻿#include "Components/AtomHealthComponent.h"
 #include "Components/AtomDefenseComponent.h"
 
+void UAtomHealthComponent::Save_Implementation(UAtomSaveGame* SaveGame)
+{
+}
+
+void UAtomHealthComponent::Load_Implementation(UAtomSaveGame* SaveGame)
+{
+	// At this point the component was loaded so we want to check if the owner was dead
+	// and if so, we want to call the death event.
+	if (!IsAlive())
+	{
+		OnDeath.Broadcast(GetOwner());
+	}
+}
 
 // Sets default values for this component's properties
 UAtomHealthComponent::UAtomHealthComponent()

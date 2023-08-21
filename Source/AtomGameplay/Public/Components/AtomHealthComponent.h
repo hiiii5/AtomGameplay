@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/AtomSaveInterface.h"
 #include "Stats/AtomStats.h"
 #include "AtomHealthComponent.generated.h"
 
@@ -28,22 +29,24 @@ public:
 };
 
 /** Health component for actors. */
-UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class ATOMGAMEPLAY_API UAtomHealthComponent : public UActorComponent
+UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
+class ATOMGAMEPLAY_API UAtomHealthComponent : public UActorComponent, public IAtomSaveInterface
 {
+public:
+	virtual void Save_Implementation(UAtomSaveGame* SaveGame) override;
+	virtual void Load_Implementation(UAtomSaveGame* SaveGame) override;
+
+private:
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
 	UAtomHealthComponent();
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Atom|Health")
-	bool bStartWithMaxHealth;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Atom|Health")
+	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Health")
 	float Health;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Health")
+	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Health")
 	float MaxHealth;
 
 	UPROPERTY(BlueprintAssignable, Category = "Atom|Health")

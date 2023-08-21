@@ -4,24 +4,59 @@
 #include "Game/AtomPlayerState.h"
 
 #include "Game/AtomSaveGame.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 void AAtomPlayerState::Save_Implementation(UAtomSaveGame* SaveGame)
 {
-	if(!SaveGame)
+	if (!SaveGame)
 	{
 		UE_LOG(LogTemp, Error, TEXT("AAtomPlayerState::Save_Implementation() called with a nullptr SaveGame!"));
 		return;
 	}
-	
-	FAtomPlayerSaveData PlayerSaveData;
-	PlayerSaveData.ActorName = GetFName();
+
+	APawn* Pawn = GetPawn();
+	if (!Pawn)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AAtomPlayerState::Save_Implementation() called with a nullptr Pawn!"));
+		return;
+	}
+
+	FAtomPlayerSaveData PlayerSaveData{};
+	PlayerSaveData.ActorName = Pawn->GetClass()->GetName();
 	PlayerSaveData.PlayerId = GetUniqueId().ToString();
 	PlayerSaveData.bResumeAtTransform = true;
 
-	if (const APawn *Pawn = GetPawn())
+	// Serialize the components
+	for (UActorComponent* Component : Pawn->GetComponents())
 	{
-		PlayerSaveData.Transform = Pawn->GetActorTransform();
+		if (!Component->Implements<UAtomSaveInterface>())
+		{
+			continue;
+		}
+
+		FAtomComponentSaveData ComponentSaveData{Component->GetFName().ToString()};
+
+		FMemoryWriter ComponentMemoryWriter(ComponentSaveData.ByteData);
+		FObjectAndNameAsStringProxyArchive ComponentAr(ComponentMemoryWriter, true);
+		ComponentAr.ArIsSaveGame = true;
+		Component->Serialize(ComponentAr);
+
+		PlayerSaveData.Components.Add(ComponentSaveData.ComponentName, ComponentSaveData);
 	}
+
+	// Serialize the pawn
+	FMemoryWriter PawnMemoryWriter(PlayerSaveData.ByteData);
+	FObjectAndNameAsStringProxyArchive PawnAr(PawnMemoryWriter, true);
+	PawnAr.ArIsSaveGame = true;
+	Pawn->Serialize(PawnAr);
+
+	PlayerSaveData.Transform = Pawn->GetActorTransform();
+
+	// Serialize the state.
+	FMemoryWriter MemoryWrite(PlayerSaveData.PlayerStateByteData);
+	FObjectAndNameAsStringProxyArchive Ar(MemoryWrite, true);
+	Ar.ArIsSaveGame = true;
+	this->Serialize(Ar);
 
 	SaveGame->PlayerSaveData = PlayerSaveData;
 }
@@ -34,5 +69,8 @@ void AAtomPlayerState::Load_Implementation(UAtomSaveGame* SaveGame)
 		return;
 	}
 
-	// Could do more here...
+	FMemoryReader MemoryReader(SaveGame->PlayerSaveData.PlayerStateByteData);
+	FObjectAndNameAsStringProxyArchive Ar(MemoryReader, true);
+	Ar.ArIsSaveGame = true;
+	this->Serialize(Ar);
 }

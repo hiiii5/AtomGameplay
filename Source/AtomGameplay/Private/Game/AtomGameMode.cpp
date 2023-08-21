@@ -4,7 +4,17 @@
 #include "Game/AtomGameMode.h"
 
 #include "AtomSaveGameSubsystem.h"
+#include "Interfaces/AtomSaveInterface.h"
 #include "Kismet/GameplayStatics.h"
+
+void AAtomGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	UAtomSaveGameSubsystem* SaveGameSubsystem = GetGameInstance()->GetSubsystem<UAtomSaveGameSubsystem>();
+	APlayerController* NewPlayer = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	SaveGameSubsystem->LoadPlayerPawn(NewPlayer);
+	SaveGameSubsystem->OverrideSpawnTransform(NewPlayer);
+}
 
 void AAtomGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
@@ -24,5 +34,4 @@ void AAtomGameMode::HandleStartingNewPlayer_Implementation(APlayerController* Ne
 	
 	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 
-	SaveGameSubsystem->OverrideSpawnTransform(NewPlayer);
 }

@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Atom|SaveGame")
 	FString GetSlotName() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Atom|SaveGame")
+	bool HasValidSaveGame() const;
+	
 	/**
 	 * @brief Writes the save game to disk.
 	 */
@@ -63,6 +66,11 @@ public:
 	
 	void OverrideSpawnTransform(APlayerController* NewPlayer) const;
 
+	void LoadPlayerPawn(APlayerController* NewPlayer) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Atom|SaveGame")
+	FString GetSavedMapName(FString SlotName = "") const;
+	
 	/** Delegate that is fired when the game is saved. */
 	UPROPERTY(BlueprintAssignable, Category = "Atom|SaveGame")
 	FOnSaveGame OnGameSaved;
