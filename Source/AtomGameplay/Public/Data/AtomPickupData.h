@@ -24,6 +24,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	UTexture2D* Icon;
 
+	// This is the implementation class of the pickup actor.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	UClass* PickupClass;
 };

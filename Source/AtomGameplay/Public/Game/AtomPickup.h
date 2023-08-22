@@ -9,11 +9,11 @@
 class UAtomPickupData;
 
 USTRUCT(BlueprintType, Blueprintable)
-struct FPickupInfo
+struct FAtomPickupInfo
 {
 	GENERATED_BODY()
 
-	FPickupInfo()
+	FAtomPickupInfo()
 		: PickupData(nullptr),
 		  Quantity(1),
 		  bIsStackable(false),
@@ -23,7 +23,7 @@ struct FPickupInfo
 	{
 	}
 	
-	FPickupInfo(const int32 Quantity, const bool bIsStackable, const bool bIsQuestItem, const bool bCanBeDropped, const bool bCanBeUsed)
+	FAtomPickupInfo(const int32 Quantity, const bool bIsStackable, const bool bIsQuestItem, const bool bCanBeDropped, const bool bCanBeUsed)
 		: PickupData(nullptr),
 		  Quantity(Quantity),
 		  bIsStackable(bIsStackable),
@@ -40,6 +40,9 @@ struct FPickupInfo
 	int32 Quantity = 1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
+	int32 MaxStackQuantity = 1;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	bool bIsStackable = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
@@ -52,9 +55,9 @@ struct FPickupInfo
 	bool bCanBeUsed = false;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPickedUp, FPickupInfo, PickupInfo, AActor*, Interactor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPickedUp, FAtomPickupInfo, PickupInfo, AActor*, Interactor);
 
-UCLASS(Blueprintable, ClassGroup= "Atom")
+UCLASS(Blueprintable, ClassGroup = "Atom")
 class ATOMGAMEPLAY_API AAtomPickup : public AAtomInteractable
 {
 	GENERATED_BODY()
@@ -67,7 +70,7 @@ public:
 	UAtomPickupData* PickupData;
 
 	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	FPickupInfo PickupInfo;
+	FAtomPickupInfo PickupInfo;
 
 	UPROPERTY(BlueprintAssignable, Category = "Atom|Pickup")
 	FOnPickedUp OnPickedUp;

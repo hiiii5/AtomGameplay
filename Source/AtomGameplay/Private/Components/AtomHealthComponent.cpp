@@ -23,10 +23,12 @@ UAtomHealthComponent::UAtomHealthComponent()
 }
 
 void UAtomHealthComponent::TakeDamage(const float Damage, UAtomBaseDamage* DamageType)
-{
-	// TODO: Maybe consider an event for when something was already dead, just in case so that we can do something with it.
-	if (!IsAlive()) return; // Can't do damage to something that is dead.
-
+{	// TODO: Maybe consider an event for when something was already dead, just in case so that we can do something with it.
+	if (!IsAlive())
+	{
+		return; // Can't do damage to something that is dead.
+	}
+	
 	// Check for a defense component.
 	UAtomDefenseComponent* DefenseComponent = GetOwner()->FindComponentByClass<UAtomDefenseComponent>();
 	float RealDamage = 0.0f;
