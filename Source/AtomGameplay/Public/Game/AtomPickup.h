@@ -6,6 +6,7 @@
 #include "AtomInteractable.h"
 #include "AtomPickup.generated.h"
 
+class USphereComponent;
 class UAtomPickupData;
 
 USTRUCT(BlueprintType, Blueprintable)
@@ -15,21 +16,13 @@ struct FAtomPickupInfo
 
 	FAtomPickupInfo()
 		: PickupData(nullptr),
-		  Quantity(1),
-		  bIsStackable(false),
-		  bIsQuestItem(false),
-		  bCanBeDropped(true),
-		  bCanBeUsed(false)
+		  Quantity(1)
 	{
 	}
 	
-	FAtomPickupInfo(const int32 Quantity, const bool bIsStackable, const bool bIsQuestItem, const bool bCanBeDropped, const bool bCanBeUsed)
+	FAtomPickupInfo(const int32 Quantity)
 		: PickupData(nullptr),
-		  Quantity(Quantity),
-		  bIsStackable(bIsStackable),
-		  bIsQuestItem(bIsQuestItem),
-		  bCanBeDropped(bCanBeDropped),
-		  bCanBeUsed(bCanBeUsed)
+		  Quantity(Quantity)
 	{
 	}
 
@@ -38,21 +31,6 @@ struct FAtomPickupInfo
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	int32 Quantity = 1;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	int32 MaxStackQuantity = 1;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bIsStackable = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bIsQuestItem = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bCanBeDropped = true;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bCanBeUsed = false;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPickedUp, FAtomPickupInfo, PickupInfo, AActor*, Interactor);
@@ -66,9 +44,9 @@ public:
 	// Sets default values for this actor's properties
 	AAtomPickup();
 
-	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	UAtomPickupData* PickupData;
-
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Atom|Pickup")
+	USphereComponent* PickupSphere;
+	
 	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	FAtomPickupInfo PickupInfo;
 

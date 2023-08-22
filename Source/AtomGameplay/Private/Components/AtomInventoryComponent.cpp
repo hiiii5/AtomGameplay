@@ -4,153 +4,72 @@
 #include "Components/AtomInventoryComponent.h"
 
 #include "Data/AtomPickupData.h"
-#include "Game/AtomInventoryItem.h"
+#include "Game/AtomPickup.h"
+
 
 // Sets default values for this component's properties
 UAtomInventoryComponent::UAtomInventoryComponent()
 {
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// Initialize our array of inventory items
-	Items = TArray<UAtomInventoryItem*>();
+	// ...
 }
 
+
+// Called when the game starts
 void UAtomInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// ...
+	
 }
 
+
+// Called every frame
 void UAtomInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// ...
 }
 
-void UAtomInventoryComponent::CreateInventoryItem(const FAtomPickupInfo PickupInfo, UAtomInventoryItem*& Item)
+bool UAtomInventoryComponent::AddPickup(AAtomPickup* Pickup)
 {
-	// Create a new inventory item
-	Item = NewObject<UAtomInventoryItem>();
-	Item->PickupInfo = PickupInfo;
-}
+	ensure(Pickup);
 
-void UAtomInventoryComponent::AddToInventory(UAtomInventoryItem* ItemToAdd)
-{
-	FAtomPickupInfo PickupInfo = ItemToAdd->PickupInfo;
-	float Quantity = PickupInfo.Quantity;
-	bool bIsStackable = PickupInfo.bIsStackable;
-
-	if (!bIsStackable)
-	{
-		Items.Add(ItemToAdd);
-
-		return;
-	}
-
-	// The item to add might have multiple entries in the items list, and they might not be stacked
-	// We need to check if we have any of the item in our inventory, and if so, add to the quantity
-	for (int i = 0; i < Items.Num(); i++)
-	{
-		UAtomInventoryItem* CurrentItem = Items[i];
-		FAtomPickupInfo CurrentItemPickupInfo = CurrentItem->PickupInfo; //a copy
-		float ItemQuantity = CurrentItemPickupInfo.Quantity;
-		bool bItemIsStackable = CurrentItemPickupInfo.bIsStackable;
-
-		// If the item is stackable, and the item we're adding is stackable, and the item names match
-		bool bDoesNameMatch = CurrentItemPickupInfo.PickupData->Name.ToString() == PickupInfo.PickupData->Name.ToString();
-		bool bCanStack = bItemIsStackable && bIsStackable;
-		if (bDoesNameMatch && bCanStack)
-		{
-			// Add the quantity of the item we're adding to the quantity of the item in the inventory
-			// Check if the quantity is greater than the stack size, and if so, add the remainder to the next item
-			float NewQuantity = ItemQuantity + Quantity;
-			float MaxStackQuantity = CurrentItemPickupInfo.MaxStackQuantity;
-			if (NewQuantity > MaxStackQuantity)
-			{
-				// Set the quantity of the item in the inventory to the max stack quantity
-				CurrentItemPickupInfo.Quantity = MaxStackQuantity;
-				CurrentItem->PickupInfo = CurrentItemPickupInfo; //set equal to the copy
-
-				// Set the quantity of the item we're adding to the remainder
-				// This assumes that the quantity we are adding can not be greater than the max stack quantity
-				PickupInfo.Quantity = NewQuantity - MaxStackQuantity;
-				ItemToAdd->PickupInfo = PickupInfo;
-
-				// Add the item to add to the inventory if the remaining quantity is > 0
-				if (PickupInfo.Quantity > 0)
-				{
-					Items.Add(ItemToAdd);
-				}
-				return;
-			}
-
-			// Set the quantity of the item in the inventory to the new quantity
-			CurrentItemPickupInfo.Quantity = NewQuantity;
-			CurrentItem->PickupInfo = CurrentItemPickupInfo;
-
-			return;
-		}
-	}
-}
-
-void UAtomInventoryComponent::GetTotalQuantity(FString ItemName, int32& Quantity)
-{
-	Quantity = 0;
-
-	for (UAtomInventoryItem* Item : Items)
-	{
-		FAtomPickupInfo ItemPickupInfo = Item->PickupInfo;
-		FString ItemPickupName = ItemPickupInfo.PickupData->Name.ToString();
-		if (ItemPickupName == ItemName)
-		{
-			Quantity += ItemPickupInfo.Quantity;
-		}
-	}
-}
-
-bool UAtomInventoryComponent::RemoveFromInventory(FString ItemName, int32 QuantityToRemove)
-{
-	UAtomInventoryItem* ItemToRemove = nullptr;
-	FindItemInInventory(ItemName, ItemToRemove);
-
-	if (!ItemToRemove)
+	if (Inventory.Num() >= MaxInventorySlots)
 	{
 		return false;
 	}
+	
+	FAtomPickupInfo PickupInfo = Pickup->PickupInfo;
 
-	int32 TotalQuantity;
-	GetTotalQuantity(ItemName, TotalQuantity);
-
-	if (TotalQuantity < QuantityToRemove)
+	if (!Contains(PickupInfo.PickupData->Name.ToString()))
 	{
-		return false;
+		Inventory.Add(FAtomInventoryInfo{PickupInfo.PickupData, PickupInfo.Quantity});
+		return true;
+	}
+	
+	for (int32 i = 0; i < Inventory.Num(); ++i)
+	{
+		if (Inventory[i].PickupData == PickupInfo.PickupData)
+		{
+			Inventory[i].Quantity += PickupInfo.Quantity;
+			return true;
+		}
 	}
 
-	for (int i = 0; i < Items.Num(); i++)
+	return false;
+}
+
+bool UAtomInventoryComponent::Contains(const FString& Name)
+{
+	for (const FAtomInventoryInfo Element : Inventory)
 	{
-		UAtomInventoryItem* CurrentItem = Items[i];
-		FAtomPickupInfo CurrentItemPickupInfo = CurrentItem->PickupInfo;
-		FString CurrentItemName = CurrentItemPickupInfo.PickupData->Name.ToString();
-
-		// If the item we are looking at does not match the item we want to remove, continue to the next item
-		if (ItemName != CurrentItemName)
-		{
-			continue;
-		}
-
-		int32 OriginalQuantityToRemove = QuantityToRemove;
-		// Subtract the amount that is in the current slot from the amount we want to remove
-		QuantityToRemove -= CurrentItemPickupInfo.Quantity;
-		// Get the difference of the original amount we wanted to remove and the amount that we have left to remove
-		int32 Difference = OriginalQuantityToRemove - QuantityToRemove;
-		// Subtract the difference from the current items quantity
-		CurrentItemPickupInfo.Quantity -= Difference;
-
-		if (CurrentItemPickupInfo.Quantity <= 0)
-		{
-			Items.RemoveAt(i);
-			i--;
-		}
-
-		if (QuantityToRemove <= 0)
+		if (Element.PickupData->Name.ToString() == Name)
 		{
 			return true;
 		}
@@ -159,21 +78,150 @@ bool UAtomInventoryComponent::RemoveFromInventory(FString ItemName, int32 Quanti
 	return false;
 }
 
-void UAtomInventoryComponent::FindItemInInventory(FString ItemName, UAtomInventoryItem*& Item)
+bool UAtomInventoryComponent::ContainsPickup(UAtomPickupData* PickupData)
 {
-	Item = nullptr;
-
-	// Loop over every item in the inventory, until we find an who's pickup has a matching name
-	for (int i = 0; i < Items.Num(); i++)
+	if (!PickupData)
 	{
-		UAtomInventoryItem* CurrentItem = Items[i];
-		FAtomPickupInfo CurrentItemPickupInfo = CurrentItem->PickupInfo;
-		FString CurrentItemName = CurrentItemPickupInfo.PickupData->Name.ToString();
+		return false;
+	}
 
-		if (ItemName == CurrentItemName)
+	return Contains(PickupData->Name.ToString());
+}
+
+int32 UAtomInventoryComponent::IndexOf(const FString& Name)
+{
+	int32 FoundIndex = -1;
+	for (int32 i = 0; i < Inventory.Num(); ++i)
+	{
+		if (Inventory[i].PickupData->Name.ToString() == Name)
 		{
-			Item = CurrentItem;
+			FoundIndex = i;
+			break;
+		}
+	}
+
+	return FoundIndex;
+}
+
+int32 UAtomInventoryComponent::IndexOfPickup(UAtomPickupData* PickupData)
+{
+	if (!PickupData)
+	{
+		return -1;
+	}
+	return IndexOf(PickupData->Name.ToString());
+}
+
+int32 UAtomInventoryComponent::QuantityOf(const FString& Name)
+{
+	int32 Quantity = 0;
+	for (const FAtomInventoryInfo Element : Inventory)
+	{
+		if (Element.PickupData->Name.ToString() == Name)
+		{
+			Quantity = Element.Quantity;
+			break;
+		}
+	}
+
+	return Quantity;
+}
+
+int32 UAtomInventoryComponent::QuantityOfPickup(UAtomPickupData* PickupData)
+{
+	if (!PickupData)
+	{
+		return 0;
+	}
+
+	return QuantityOf(PickupData->Name.ToString());
+}
+
+void UAtomInventoryComponent::RemoveAt(const int32 Index)
+{
+	if (Index < 0 || Index >= Inventory.Num())
+	{
+		return;
+	}
+
+	Inventory.RemoveAt(Index);
+}
+
+void UAtomInventoryComponent::Remove(const FString& Name)
+{
+	const int32 Index = IndexOf(Name);
+	if (Index < 0)
+	{
+		return;
+	}
+
+	RemoveAt(Index);
+}
+
+void UAtomInventoryComponent::RemovePickup(UAtomPickupData* PickupData)
+{
+	const int32 Index = IndexOfPickup(PickupData);
+	if (Index < 0)
+	{
+		return;
+	}
+
+	RemoveAt(Index);
+}
+
+void UAtomInventoryComponent::RemoveCount(const FString& Name, const int32 Count)
+{
+	const int32 TotalQuantity = QuantityOf(Name);
+	if (TotalQuantity <= 0)
+	{
+		return;
+	}
+
+	for (int32 i = 0; i < Inventory.Num(); ++i)
+	{
+		if (Inventory[i].PickupData->Name.ToString() == Name)
+		{
+			// If the quantity of this item is less than the count to remove, then get the remainder to remove and continue finding more of the elements
+			if (Inventory[i].Quantity < Count)
+			{
+				RemoveAt(i);
+				RemoveCount(Name, Count - Inventory[i].Quantity);
+				return;
+			}
+
+			// Otherwise, remove the count from the quantity and return
+			Inventory[i].Quantity -= Count;
+			if (Inventory[i].Quantity <= 0)
+			{
+				RemoveAt(i);
+			}
 			return;
 		}
 	}
 }
+
+void UAtomInventoryComponent::RemovePickupCount(UAtomPickupData* PickupData, const int32 Count)
+{
+	if (!PickupData)
+	{
+		return;
+	}
+
+	RemoveCount(PickupData->Name.ToString(), Count);
+}
+
+void UAtomInventoryComponent::Clear()
+{
+	Inventory.Empty();
+}
+
+int32 UAtomInventoryComponent::Count()
+{
+	return Inventory.Num();
+}
+
+int32 UAtomInventoryComponent::RemainingSlotCount()
+{
+	return MaxInventorySlots - Inventory.Num();
+}
+
