@@ -6,30 +6,23 @@
 #include "AtomInteractable.h"
 #include "AtomPickup.generated.h"
 
+class USphereComponent;
 class UAtomPickupData;
 
 USTRUCT(BlueprintType, Blueprintable)
-struct FPickupInfo
+struct FAtomPickupInfo
 {
 	GENERATED_BODY()
 
-	FPickupInfo()
+	FAtomPickupInfo()
 		: PickupData(nullptr),
-		  Quantity(1),
-		  bIsStackable(false),
-		  bIsQuestItem(false),
-		  bCanBeDropped(true),
-		  bCanBeUsed(false)
+		  Quantity(1)
 	{
 	}
 	
-	FPickupInfo(const int32 Quantity, const bool bIsStackable, const bool bIsQuestItem, const bool bCanBeDropped, const bool bCanBeUsed)
+	FAtomPickupInfo(const int32 Quantity)
 		: PickupData(nullptr),
-		  Quantity(Quantity),
-		  bIsStackable(bIsStackable),
-		  bIsQuestItem(bIsQuestItem),
-		  bCanBeDropped(bCanBeDropped),
-		  bCanBeUsed(bCanBeUsed)
+		  Quantity(Quantity)
 	{
 	}
 
@@ -38,23 +31,11 @@ struct FPickupInfo
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
 	int32 Quantity = 1;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bIsStackable = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bIsQuestItem = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bCanBeDropped = true;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	bool bCanBeUsed = false;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPickedUp, FPickupInfo, PickupInfo, AActor*, Interactor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPickedUp, FAtomPickupInfo, PickupInfo, AActor*, Interactor);
 
-UCLASS(Blueprintable, ClassGroup= "Atom")
+UCLASS(Blueprintable, ClassGroup = "Atom")
 class ATOMGAMEPLAY_API AAtomPickup : public AAtomInteractable
 {
 	GENERATED_BODY()
@@ -63,11 +44,11 @@ public:
 	// Sets default values for this actor's properties
 	AAtomPickup();
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Atom|Pickup")
+	USphereComponent* PickupSphere;
+	
 	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	UAtomPickupData* PickupData;
-
-	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category = "Atom|Pickup")
-	FPickupInfo PickupInfo;
+	FAtomPickupInfo PickupInfo;
 
 	UPROPERTY(BlueprintAssignable, Category = "Atom|Pickup")
 	FOnPickedUp OnPickedUp;

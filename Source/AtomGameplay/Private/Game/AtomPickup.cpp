@@ -2,14 +2,21 @@
 
 
 #include "Game/AtomPickup.h"
+
+#include "Components/SphereComponent.h"
 #include "Data/AtomPickupData.h"
 
 // Sets default values
 AAtomPickup::AAtomPickup()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick= true;
 
+	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
+	PickupSphere->SetCollisionProfileName("OverlapAll");
+	PickupSphere->SetGenerateOverlapEvents(true);
+	PickupSphere->SetSphereRadius(100.0f);
+	
 	// Pickups generally will be removed from the world on pickup, like an inventory item.
 	bDestroyOnUse = true;
 	bIsReusable = false;
@@ -26,10 +33,6 @@ void AAtomPickup::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	
-	// As a convenience we want to set the pickup's info pickup data to the pickup data asset's info.
-	// This way we can easily access the pickup data from the pickup info.
-	// We really don't want these things to be out of sync.
-	PickupInfo.PickupData = PickupData;
 }
 
 // Called every frame
