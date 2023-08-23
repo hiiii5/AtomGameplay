@@ -11,6 +11,10 @@ void AAtomGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	UAtomSaveGameSubsystem* SaveGameSubsystem = GetGameInstance()->GetSubsystem<UAtomSaveGameSubsystem>();
+	if (!SaveGameSubsystem->HasValidSaveGame())
+	{
+		return;
+	}
 	APlayerController* NewPlayer = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	SaveGameSubsystem->LoadPlayerPawn(NewPlayer);
 	SaveGameSubsystem->OverrideSpawnTransform(NewPlayer);
@@ -23,6 +27,11 @@ void AAtomGameMode::InitGame(const FString& MapName, const FString& Options, FSt
 	UAtomSaveGameSubsystem* SaveGameSubsystem = GetGameInstance()->GetSubsystem<UAtomSaveGameSubsystem>();
 	FString SlotName = UGameplayStatics::ParseOption(Options, "SaveGame");
 
+	if(SlotName.IsEmpty())
+	{
+		return;
+	}
+	
 	// Optionally load the world based on options passed to a load command
 	SaveGameSubsystem->LoadSaveGame(SlotName);
 }
