@@ -10,6 +10,8 @@ class UAtomSaveGame;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSaveGame, UAtomSaveGame*, SaveGame);
 
+DECLARE_LOG_CATEGORY_EXTERN(LogAtomSaveSubsystem, Log, All);
+
 /**
  * 
  */
