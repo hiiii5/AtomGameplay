@@ -19,6 +19,8 @@ AAtomSlidingDoor::AAtomSlidingDoor()
 	// Construct the door mesh
 	DoorMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMeshComponent"));
 	DoorMeshComponent->SetupAttachment(DoorRootComponent);
+	DoorMeshComponent->SetCollisionProfileName(FName("Custom"));
+	DoorMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel4, ECR_Block);
 }
 
 // Called when the game starts or when spawned
@@ -140,6 +142,15 @@ void AAtomSlidingDoor::Load_Implementation(UAtomSaveGame* SaveGame)
 void AAtomSlidingDoor::Interact_Implementation(AActor* Interactor)
 {
 	ToggleDoor();
+
+	for (AAtomInteractable* Interactable : ButtonsToActivate)
+	{
+		if (Interactable == nullptr)
+		{
+			continue;
+		}
+		IAtomInteractableInterface::Execute_Interact(Interactable, this);
+	}
 }
 
 void AAtomSlidingDoor::ToggleDoor()
@@ -165,16 +176,25 @@ void AAtomSlidingDoor::ToggleDoor()
 	{
 		DoorTimeline->Reverse();
 		bIsOpen = false;
+		bWasUsed = false;
 	}
 	else if (!bIsOpen || (!bIsOpen && bIsInMotion))
 	{
 		DoorTimeline->Play();
 		bIsOpen = true;
+		bWasUsed = true;
 	}
 }
 
 void AAtomSlidingDoor::ToggleLocked(const bool bLocked)
 {
 	bIsInteractable = !bLocked;
+}
+
+void AAtomSlidingDoor::ForceClose()
+{
+	DoorTimeline->Reverse();
+	bIsOpen = false;
+	bWasUsed = false;
 }
 

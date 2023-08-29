@@ -50,6 +50,9 @@ public:
 	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category="Atom|Door")
 	FVector ClosedPosition = FVector::ZeroVector;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Atom|Door")
+	TArray<AAtomInteractable*> ButtonsToActivate;
+
 	UPROPERTY(BlueprintAssignable, Category="Atom|Door")
 	FOnDoorOpened OnDoorOpened;
 
@@ -90,4 +93,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Atom|Door")
 	void ToggleLocked(bool bLocked);
+
+	UFUNCTION(BlueprintCallable, Category="Atom|Door")
+	void ForceClose();
 };
