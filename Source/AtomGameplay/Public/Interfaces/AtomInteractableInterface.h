@@ -27,4 +27,13 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Atom|Interactable")
 	bool IsInteractable() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Atom|Interactable")
+	void Highlight(bool bHighlight);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Atom|Interactable")
+	void GetInteractableName(FString &Name);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Atom|Interactable")
+	bool IsPickup() const;
 };

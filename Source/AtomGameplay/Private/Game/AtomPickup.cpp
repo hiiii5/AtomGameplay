@@ -47,6 +47,22 @@ void AAtomPickup::Interact_Implementation(AActor* Interactor)
 	Super::Interact_Implementation(Interactor);
 }
 
+void AAtomPickup::GetInteractableName_Implementation(FString& Name)
+{
+	if (!PickupInfo.PickupData)
+	{
+		Name = "";
+		return;
+	}
+
+	Name = PickupInfo.PickupData->Name.ToString();
+}
+
+bool AAtomPickup::IsPickup_Implementation() const
+{
+	return true;
+}
+
 void AAtomPickup::Pickup(AActor* Interactor)
 {
 	IAtomInteractableInterface::Execute_Interact(this, Interactor);

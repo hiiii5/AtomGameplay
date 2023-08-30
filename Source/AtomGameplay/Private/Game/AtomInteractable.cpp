@@ -57,3 +57,13 @@ bool AAtomInteractable::IsInteractable_Implementation() const
 	return bIsInteractable;
 }
 
+void AAtomInteractable::GetInteractableName_Implementation(FString& Name)
+{
+	Name = this->GetName();
+}
+
+bool AAtomInteractable::IsPickup_Implementation() const
+{
+	return false;
+}
+

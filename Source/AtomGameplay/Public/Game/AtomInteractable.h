@@ -44,4 +44,6 @@ public:
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	virtual bool IsInteractable_Implementation() const override;
+	virtual void GetInteractableName_Implementation(FString& Name) override;
+	virtual bool IsPickup_Implementation() const override;
 };

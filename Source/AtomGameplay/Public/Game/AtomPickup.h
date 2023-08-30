@@ -62,6 +62,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void Interact_Implementation(AActor* Interactor) override;
+	virtual void GetInteractableName_Implementation(FString& Name) override;
+	virtual bool IsPickup_Implementation() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|Pickup")
 	void Pickup(AActor* Interactor);
