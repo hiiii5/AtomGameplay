@@ -54,13 +54,15 @@ void AAtomSlidingDoor::BeginPlay()
 		DoorTimeline->SetTimelineLengthMode(ETimelineLengthMode::TL_LastKeyFrame);
 
 		// Set the playback position to the start or end of the timeline depending on if the door starts open or not.
-		if (bStartsOpen)
+		if (IsOpen == 1)
 		{
 			DoorTimeline->SetPlaybackPosition(1.f, false);
+			DoorMeshComponent->SetRelativeLocation(OpenedPosition);
 		}
 		else
 		{
 			DoorTimeline->SetPlaybackPosition(0.f, false);
+			DoorMeshComponent->SetRelativeLocation(ClosedPosition);
 		}
 
 		// Bind the update timeline function and the finished timeline function
@@ -83,13 +85,13 @@ void AAtomSlidingDoor::OnConstruction(const FTransform& Transform)
 
 	if (bStartsOpen)
 	{
-		bIsOpen = true;
+		IsOpen = 1;
 		DoorTimelineValue = 1.f;
 		DoorMeshComponent->SetRelativeLocation(OpenedPosition);
 	}
 	else
 	{
-		bIsOpen = false;
+		IsOpen = -1;
 		DoorTimelineValue = 0.f;
 		DoorMeshComponent->SetRelativeLocation(ClosedPosition);
 	}
@@ -109,7 +111,7 @@ void AAtomSlidingDoor::TimelineCallback(float Value)
 
 void AAtomSlidingDoor::TimelineFinishedCallback() const
 {
-	(bIsOpen) ? OnDoorOpened.Broadcast() : OnDoorClosed.Broadcast();
+	(IsOpen == 1) ? OnDoorOpened.Broadcast() : OnDoorClosed.Broadcast();
 }
 
 // Called every frame
@@ -125,15 +127,17 @@ void AAtomSlidingDoor::Tick(float DeltaTime)
 
 void AAtomSlidingDoor::Load_Implementation(UAtomSaveGame* SaveGame)
 {
-	if(bIsOpen)
+	if(IsOpen == 1)
 	{
 		DoorTimelineValue = 1.f;
 		DoorMeshComponent->SetRelativeLocation(OpenedPosition);
+		DoorTimeline->SetPlaybackPosition(1.f, false);
 	}
 	else
 	{
 		DoorTimelineValue = 0.f;
 		DoorMeshComponent->SetRelativeLocation(ClosedPosition);
+		DoorTimeline->SetPlaybackPosition(0.f, false);
 	}
 	
 	Super::Load_Implementation(SaveGame);
@@ -172,16 +176,16 @@ void AAtomSlidingDoor::ToggleDoor()
 	}
 	
 	// To allow the door to be interacted with while it is in motion
-	if (bIsOpen || (bIsOpen && bIsInMotion))
+	if (IsOpen == 1 || (IsOpen == 1 && bIsInMotion))
 	{
 		DoorTimeline->Reverse();
-		bIsOpen = false;
+		IsOpen = -1;
 		bWasUsed = false;
 	}
-	else if (!bIsOpen || (!bIsOpen && bIsInMotion))
+	else if (IsOpen == -1 || (IsOpen == -1 && bIsInMotion))
 	{
 		DoorTimeline->Play();
-		bIsOpen = true;
+		IsOpen = 1;
 		bWasUsed = true;
 	}
 }
@@ -194,7 +198,7 @@ void AAtomSlidingDoor::ToggleLocked(const bool bLocked)
 void AAtomSlidingDoor::ForceClose()
 {
 	DoorTimeline->Reverse();
-	bIsOpen = false;
+	IsOpen = -1;
 	bWasUsed = false;
 }
 

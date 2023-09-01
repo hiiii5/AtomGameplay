@@ -120,7 +120,9 @@ void UAtomSaveGameSubsystem::WriteSaveGame() const
 		// Now serialize the actor itself.
 		FMemoryWriter MemoryWrite(ActorSaveData.ByteData);
 		FObjectAndNameAsStringProxyArchive Ar(MemoryWrite, true);
-		Ar.ArIsSaveGame = true;
+		Ar.ArIsSaveGame = 1;
+		Ar.ArSerializingDefaults = 1;
+		Ar.StartSerializingDefaults();
 		Actor->Serialize(Ar);
 		
 		IAtomSaveInterface::Execute_Save(Actor, CurrentSaveGame);
