@@ -38,8 +38,8 @@ public:
 	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category="Atom|Door")
 	bool bStartsOpen;
 	
-	UPROPERTY(SaveGame, BlueprintReadOnly, VisibleAnywhere, Category="Atom|Door")
-	bool bIsOpen;
+	UPROPERTY(SaveGame, BlueprintReadWrite, EditAnywhere, Category="Atom|Door")
+	int32 IsOpen;
 
 	UPROPERTY(SaveGame, BlueprintReadOnly, VisibleAnywhere, Category="Atom|Door")
 	bool bIsInMotion;
