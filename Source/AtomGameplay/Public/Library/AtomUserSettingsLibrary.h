@@ -66,20 +66,35 @@ class ATOMGAMEPLAY_API UAtomUserSettingsLibrary : public UBlueprintFunctionLibra
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
 	static EAtomUserSetting StringToQualityLevel(FString QualityLevel);
 
-	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
 	static EAtomUserSetting IntToQualityLevel(int32 QualityLevel);
-
-	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
 	static FString QualityLevelToString(EAtomUserSetting QualityLevel);
 
-	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
 	static int32 QualityLevelToInt(EAtomUserSetting QualityLevel);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
+	static FString WindowModeToString(EWindowMode::Type WindowMode);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
+	static TEnumAsByte<EWindowMode::Type> StringToWindowMode(FString WindowMode);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
+	static FIntPoint StringToResolution(const FString& Resolution, FString Separator = TEXT("x"));
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|UserSettings")
+	static FString ResolutionToString(const FIntPoint Resolution, FString Separator = TEXT("x"));
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
 	static bool ApplyQualitySettings(const FAtomUserSettings& Settings, bool bCheckForCommandLineOverrides);
+
+	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
+	static bool ApplyResolutionSettings(const FAtomUserSettings& Settings, bool bCheckForCommandLineOverrides);
 
 	UFUNCTION(BlueprintCallable, Category = "Atom|UserSettings")
 	static bool GetQualitySettings(FAtomUserSettings& Settings);

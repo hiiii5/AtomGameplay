@@ -26,6 +26,12 @@ void UAtomSaveGameSubsystem::HandleStartingPlayer(const AController* Player) con
 	
 	AAtomPlayerState* PlayerState = Player->GetPlayerState<AAtomPlayerState>();
 
+	if (!PlayerState)
+	{
+		UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::HandleStartingPlayer no player state"));
+		return;
+	}
+	
 	UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::HandleStartingPlayer - PlayerState: %s"), *PlayerState->GetPlayerName());
 	IAtomSaveInterface::Execute_Load(PlayerState, CurrentSaveGame);
 }

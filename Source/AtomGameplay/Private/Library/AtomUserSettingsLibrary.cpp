@@ -125,6 +125,74 @@ int32 UAtomUserSettingsLibrary::QualityLevelToInt(const EAtomUserSetting Quality
 	return 2;
 }
 
+FString UAtomUserSettingsLibrary::WindowModeToString(EWindowMode::Type WindowMode)
+{
+	if (WindowMode == EWindowMode::Fullscreen)
+	{
+		return "Fullscreen";
+	}
+	if (WindowMode == EWindowMode::WindowedFullscreen)
+	{
+		return "WindowedFullscreen";
+	}
+	if (WindowMode == EWindowMode::Windowed)
+	{
+		return "Windowed";
+	}
+	return "Windowed";
+}
+
+TEnumAsByte<EWindowMode::Type> UAtomUserSettingsLibrary::StringToWindowMode(FString WindowMode)
+{
+	if (WindowMode.IsEmpty())
+	{
+		return EWindowMode::Windowed;
+	}
+	if (WindowMode == "Fullscreen")
+	{
+		return EWindowMode::Fullscreen;
+	}
+	if (WindowMode == "WindowedFullscreen")
+	{
+		return EWindowMode::WindowedFullscreen;
+	}
+	if (WindowMode == "Windowed")
+	{
+		return EWindowMode::Windowed;
+	}
+	return EWindowMode::Windowed;
+}
+
+FIntPoint UAtomUserSettingsLibrary::StringToResolution(const FString& Resolution, FString Separator)
+{
+	if (Resolution.IsEmpty())
+	{
+		return FIntPoint(1920, 1080);
+	}
+	if (Separator.IsEmpty())
+	{
+		Separator = "x";
+	}
+	FIntPoint Result;
+	FString Left;
+	FString Right;
+	if (Resolution.Split(Separator, &Left, &Right))
+	{
+		Result.X = FCString::Atoi(*Left);
+		Result.Y = FCString::Atoi(*Right);
+	}
+	return Result;
+}
+
+FString UAtomUserSettingsLibrary::ResolutionToString(const FIntPoint Resolution, FString Separator)
+{
+	if (Separator.IsEmpty())
+	{
+		Separator = "x";
+	}
+	return FString::Printf(TEXT("%d%s%d"), Resolution.X, *Separator, Resolution.Y);
+}
+
 bool UAtomUserSettingsLibrary::ApplyQualitySettings(const FAtomUserSettings& Settings, const bool bCheckForCommandLineOverrides)
 {
 	// Get the game user settings
@@ -146,6 +214,20 @@ bool UAtomUserSettingsLibrary::ApplyQualitySettings(const FAtomUserSettings& Set
 	GameUserSettings->SetViewDistanceQuality(QualityLevelToInt(Settings.ViewDistanceQuality));
 	GameUserSettings->SetShadingQuality(QualityLevelToInt(Settings.ShadingQuality));
 
+	GameUserSettings->ApplySettings(bCheckForCommandLineOverrides);
+	return true;
+}
+
+bool UAtomUserSettingsLibrary::ApplyResolutionSettings(const FAtomUserSettings& Settings, bool bCheckForCommandLineOverrides)
+{
+	// Get the game user settings
+	UGameUserSettings* GameUserSettings = UGameUserSettings::GetGameUserSettings();
+	if (!GameUserSettings)
+	{
+		UE_LOG(LogBlueprint, Warning, TEXT("UAtomUserSettingsLibrary::ApplyQualitySettings: Failed to get game user settings."));
+		return false;
+	}
+	
 	GameUserSettings->SetResolutionScaleNormalized(Settings.ResolutionQuality);
 	GameUserSettings->SetVSyncEnabled(Settings.UseVSync == 1);
 	GameUserSettings->SetFrameRateLimit(Settings.FrameRateLimit);
