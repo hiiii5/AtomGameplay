@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Game/AtomPickup.h"
 #include "UObject/Interface.h"
 #include "AtomPickupInterface.generated.h"
 
-struct FAtomPickupInfo;
 // This class does not need to be modified.
 UINTERFACE()
 class UAtomPickupInterface : public UInterface

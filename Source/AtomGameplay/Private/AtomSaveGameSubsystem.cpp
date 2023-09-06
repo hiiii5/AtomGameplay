@@ -36,6 +36,26 @@ void UAtomSaveGameSubsystem::HandleStartingPlayer(const AController* Player) con
 	IAtomSaveInterface::Execute_Load(PlayerState, CurrentSaveGame);
 }
 
+FString UAtomSaveGameSubsystem::SanitizeSaveName(FString SlotName) const
+{
+	// The slot name can not be empty and it can not contain a ?
+	if (SlotName.IsEmpty())
+	{
+		SlotName = "Default";
+	}
+
+	while (SlotName.Contains("?"))
+	{
+		// Remove the ? from the slot name.
+		int32 Index;
+		SlotName.FindChar('?', Index);
+		FString Left = SlotName.Left(Index);
+		SlotName = Left + SlotName.Right(SlotName.Len() - Index - 1);
+	}
+
+	return SlotName;
+}
+
 void UAtomSaveGameSubsystem::SetSlotName(FString SlotName)
 {
 	UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::SetSlotName - %s"), *SlotName);
@@ -92,6 +112,17 @@ void UAtomSaveGameSubsystem::WriteSaveGame() const
 		}
 
 		UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame - %s"), *Actor->GetActorNameOrLabel());
+
+		// Ensure the actor is in the persistent level.
+		FString ActorsWorld = Actor->GetWorld()->GetOuter()->GetName();
+		int32 LastIndex;
+		ActorsWorld.FindLastChar('_', LastIndex);
+		ActorsWorld = ActorsWorld.Right(ActorsWorld.Len() - LastIndex - 1);
+		if (!ActorsWorld.Equals(MapName))
+		{
+			UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame - Attempting to save an actor that is not in the persistent level %s"), *Actor->GetWorld()->GetOuter()->GetName());
+			continue;
+		}
 		
 		// Create the actor save data here to save components into it.
 		FAtomActorSaveData ActorSaveData{Actor->GetActorNameOrLabel(), Actor->GetActorTransform()};
