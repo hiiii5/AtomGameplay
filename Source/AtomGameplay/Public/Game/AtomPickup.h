@@ -9,7 +9,7 @@
 class USphereComponent;
 class UAtomPickupData;
 
-USTRUCT(BlueprintType, Blueprintable)
+USTRUCT(BlueprintType)
 struct FAtomPickupInfo
 {
 	GENERATED_BODY()

@@ -35,6 +35,9 @@ public:
 	 */
 	void HandleStartingPlayer(const AController* Player) const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Atom|SaveGame")
+	FString SanitizeSaveName(FString SlotName) const;
+	
 	/**
 	 * @brief Sets the slot name for the save game.
 	 * @param SlotName Name of the slot.

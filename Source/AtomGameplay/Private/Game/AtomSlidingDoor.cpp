@@ -131,16 +131,14 @@ void AAtomSlidingDoor::Load_Implementation(UAtomSaveGame* SaveGame)
 	{
 		DoorTimelineValue = 1.f;
 		DoorMeshComponent->SetRelativeLocation(OpenedPosition);
-		DoorTimeline->SetPlaybackPosition(1.f, false);
 	}
 	else
 	{
 		DoorTimelineValue = 0.f;
 		DoorMeshComponent->SetRelativeLocation(ClosedPosition);
-		DoorTimeline->SetPlaybackPosition(0.f, false);
 	}
 	
-	Super::Load_Implementation(SaveGame);
+	//Super::Load_Implementation(SaveGame);
 }
 
 void AAtomSlidingDoor::Interact_Implementation(AActor* Interactor)
