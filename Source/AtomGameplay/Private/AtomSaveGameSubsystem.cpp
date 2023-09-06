@@ -317,7 +317,10 @@ bool UAtomSaveGameSubsystem::LoadSaveGame(FString SlotName)
 
 		if (!ActorClass)
 		{
-			UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::LoadSaveGame actor class - %s"), *ActorClass->GetName());
+			if (*Tuple.Value.ActorClass)
+			{
+				UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::LoadSaveGame could not find actor class - %s"), *Tuple.Value.ActorClass);
+			}
 			continue;
 		}
 		
