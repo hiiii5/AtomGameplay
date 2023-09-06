@@ -115,9 +115,18 @@ void UAtomSaveGameSubsystem::WriteSaveGame() const
 
 		// Ensure the actor is in the persistent level.
 		FString ActorsWorld = Actor->GetWorld()->GetOuter()->GetName();
+		UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame Actors actual world - %s"), *ActorsWorld);
+#if UE_EDITOR
 		int32 LastIndex;
 		ActorsWorld.FindLastChar('_', LastIndex);
 		ActorsWorld = ActorsWorld.Right(ActorsWorld.Len() - LastIndex - 1);
+		UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame Actors fixed world - %s"), *ActorsWorld);
+#elif UE_GAME
+		int32 LastIndex;
+		ActorsWorld.FindLastChar('/', LastIndex);
+		ActorsWorld = ActorsWorld.Right(ActorsWorld.Len() - LastIndex - 1);
+		UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame Actors fixed world - %s"), *ActorsWorld);
+#endif
 		if (!ActorsWorld.Equals(MapName))
 		{
 			UE_LOG(LogAtomSaveSubsystem, Log, TEXT("UAtomSaveGameSubsystem::WriteSaveGame - Attempting to save an actor that is not in the persistent level %s"), *Actor->GetWorld()->GetOuter()->GetName());
